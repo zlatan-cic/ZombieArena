@@ -1,10 +1,10 @@
 #include "Player.h"
-
+#include <iostream>
 Player::Player()
-	: m_Speed(START_SPEED), 
-	m_Health(START_HEALTH), 
-	m_MaxHealth(START_HEALTH), 
-	m_Texture(), 
+	: m_Speed(START_SPEED),
+	m_Health(START_HEALTH),
+	m_MaxHealth(START_HEALTH),
+	m_Texture(),
 	m_Sprite()
 {
 	// Associate a texture with the sprite
@@ -69,7 +69,7 @@ FloatRect Player::getPosition()
 	return m_Sprite.getGlobalBounds();
 }
 
-Vector2f Player::getCenter() 
+Vector2f Player::getCenter()
 {
 	return m_Position;
 }

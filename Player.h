@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <SFML/Graphics.hpp>
 
 using namespace sf;
@@ -16,7 +16,7 @@ private:
 	Sprite m_Sprite;
 
 	// And a texture
-	// !!!! Watch this space – Changes here soon!!
+	// !!!! Watch this space ï¿½ Changes here soon!!
 	Texture m_Texture;
 
 	//what is the screen resolution
@@ -50,7 +50,7 @@ private:
 public:
 	Player();
 	void spawn(IntRect arena, Vector2f resolution, int titleSize);
-	
+
 	// Call this at the end of every game
 	void resetPlayerStats();
 
