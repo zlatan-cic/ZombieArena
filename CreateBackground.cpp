@@ -67,6 +67,7 @@ int createBackground(VertexArray& rVA, IntRect arena)
             {
                 // Use a random floor texture
                 srand((int)time(0) + h * w - h);
+                // Mud or grass @var int mOrg
                 int mOrG = (rand() % TILE_TYPES);
                 int verticalOffset = mOrG * TILE_SIZE;
                 rVA[currentVertex + 0].texCoords =
