@@ -63,9 +63,10 @@ int main()
     VertexArray background;
 
     // Load the texture for our background vertex array
-    Texture textureBackground;
+    //Texture textureBackground;
+    //textureBackground.loadFromFile("graphics/background_sheet.png");
+    Texture textureBackground = TextureHolder::GetTexture("graphics/background_sheet.png");
 
-    textureBackground.loadFromFile("graphics/background_sheet.png");
 
     /////
     // Prepare for a horde of zombies
@@ -193,8 +194,8 @@ int main()
             {
                 // Prepare the level
                 // We will modify the next two lines later
-                arena.width = 500;
-                arena.height = 500;
+                arena.width = 1000;
+                arena.height = 1000;
                 arena.left = 0;
                 arena.top = 0;
                 // Pass the vertex array by reference

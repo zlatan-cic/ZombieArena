@@ -15,11 +15,18 @@ void Zombie::spawn(float startX, float startY, int type, int seed)
 		m_Health = BLOATER_HEALTH;
 		break;
 	case 1:
-		//Chaser
+		//Crawler
 		m_Sprite = Sprite(TextureHolder::GetTexture("graphics/crawler.png"));
 		m_Speed = CRAWLER_SPEED;
 		m_Health = CRAWLER_HEALTH;
 		break;
+	case 2:
+		// Chaser
+		m_Sprite = Sprite(TextureHolder::GetTexture("graphics/chaser.png"));
+		m_Speed = CHASER_SPEED;
+		m_Health = CHASER_HEALTH;
+		break;
+		
 	}
 	// Modify the speed to make the zombie unique
 	// Every zombie is unique. Create a speed modifier
@@ -97,7 +104,7 @@ void Zombie::update(float elapsedTime, Vector2f playerLocation)
 		m_Position.y = m_Position.y - m_Speed * elapsedTime;
 	}
 
-	// Move the sprite
+	// Move the sprite ( to update ther position to the player )*
 	m_Sprite.setPosition(m_Position);
 
 	// Face the sprite in the correct direction
