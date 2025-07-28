@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "ZombieArena.h"
 #include "TextureHolder.h" //
+#include "Bullet.h"
 
 using namespace sf;
 
@@ -68,16 +69,41 @@ int main()
     Texture textureBackground = TextureHolder::GetTexture("graphics/background_sheet.png");
 
 
-    /////
+    ///// NAuci dobro /////
     // Prepare for a horde of zombies
     int numZombies;
     int numZombiesAlive;
     Zombie* zombies = nullptr;
+    // 100 bullets 
+    Bullet bullets[100];
+    int currentBullet  = 0;
+    int bulletsSpare = 24;
+    int bulletsInClip = 6;
+    int clipSide = 6;
+    float fireRate = 2;
+
+    //Where was the fire button pressed?
+    Time lastPressed;
+    
+    // Hide the mouse pointer and replace it with crosshair
+    window.setMouseCursorVisible(false);
+    Sprite spriteCrosshair;
+    Texture textureCrosshair = TextureHolder::GetTexture("graphics/crosshair.png");
+    spriteCrosshair.setTexture(textureCrosshair);
+    spriteCrosshair.setOrigin(25, 25);
+
     ////
 
     // The main game loop // /// // /// ///
     while (window.isOpen())
     {
+        Time dt = clock.restart();
+
+        // Update the total game time
+        gameTimeTotal += dt;
+
+        float dtAsSeconds = dt.asSeconds();
+
         /*
         ************
         Handle input
@@ -109,7 +135,26 @@ int main()
                 }
                 if (state == State::PLAYING)
                 {
-
+                    // Reloading
+                    if (event.key.code == Keyboard::R)
+                    {
+                        if (bulletsSpare >= clipSide)
+                        {
+                            // Plenty of bullets. Realod.
+                            bulletsInClip = clipSide;
+                            bulletsSpare -= clipSide;
+                        }
+                        else if (bulletsSpare > 0)
+                        {
+                            // Only few bullets left
+                            bulletsInClip = bulletsSpare;
+                            bulletsSpare = 0;
+                        }
+                        else
+                        {
+                            ///
+                        }
+                    }
                 }
 
             }
@@ -159,6 +204,26 @@ int main()
             {
                 player.stopRight();
             }
+            if (Mouse::isButtonPressed(sf::Mouse::Left))
+            {
+                if (gameTimeTotal.asMilliseconds() - lastPressed.asMilliseconds() > 1000 / fireRate && bulletsInClip > 0)
+                {
+                    // Pass the centre of the player
+                    // and the centre of the cross-hair
+                    // to the shoot function
+                    bullets[currentBullet].shoot(player.getCenter().x, player.getCenter().y, mouseWorldPosition.x, mouseWorldPosition.y);
+                    currentBullet ++;
+                    if (currentBullet  > 99)
+                    {
+                        currentBullet  = 0;
+                        std::cout << "Fired bullet #" << currentBullet << std::endl;
+                    }
+                    lastPressed = gameTimeTotal;
+                    bulletsInClip--;
+                }
+                std::cout << "Mouse clicked!" << std::endl;
+            }// End fire a bullet*******
+
         }// End WASD while playing
 
         // Handle the LEVELING up state
@@ -232,14 +297,19 @@ int main()
         if (state == State::PLAYING)
         {
             
+            //// GORE SAM PREBACIO JER ONDA RADI /////
             // Update the delta time
-            Time dt = clock.restart();
+            //Time dt = clock.restart();
 
-            // Update the total game time
-            gameTimeTotal += dt;
+            //// Update the total game time
+            //gameTimeTotal += dt;
 
-            // Make a fraction of 1 from the delta time
-            float dtAsSeconds = dt.asSeconds();
+            //float dtAsSeconds = dt.asSeconds();
+
+            ////////
+
+            //// Make a decimal fraction of 1 from the delta time
+            //float dtAsSeconds = dt.asSeconds();
 
             // Where is the mouse pointer
             mouseScreenPosition = Mouse::getPosition();
@@ -248,6 +318,9 @@ int main()
             // based coordinates of mainView
             mouseWorldPosition = window.mapPixelToCoords(
                 Mouse::getPosition(), mainView);
+
+            // Set the crosshair to the mouse world location
+            spriteCrosshair.setPosition(mouseWorldPosition);
 
             // Update the player
             player.update(dtAsSeconds, Mouse::getPosition());
@@ -267,6 +340,14 @@ int main()
                 if (zombies[i].isAlive())
                 {
                     zombies[i].update(dt.asSeconds(), playerPosition);
+                }
+            }
+            // Update any bullets that are in-flight
+            for (int i = 0; i < 100; i++)
+            {
+                if (bullets[i].isInFlight())
+                {
+                    bullets[i].update(dtAsSeconds);
                 }
             }
 
@@ -297,22 +378,32 @@ int main()
             {
                 window.draw(zombies[i].getSprite());
             }
+            for (int i = 0; i < 100; i++)
+            {
+                if (bullets[i].isInFlight())
+                {
+                    window.draw(bullets[i].getShape());
+                }
+            }
             ////****////
 
             // Draw the player
             window.draw(player.getSprite());
+
+            //Draw the crosshair
+            window.draw(spriteCrosshair);
         }
         if (state == State::LEVELING_UP)
         {
-            std::cout << "test from Stete::LEVELING_UP";
+            //std::cout << "test from Stete::LEVELING_UP";
         }
         if (state == State::PAUSED)
         {
-            std::cout << "test from Stete::PAUSED";
+            //std::cout << "test from Stete::PAUSED";
         }
         if (state == State::GAME_OVER)
         {
-            std::cout << "test from Stete::LEVELING_UP";
+            //std::cout << "test from Stete::LEVELING_UP";
         }
         window.display();
 
